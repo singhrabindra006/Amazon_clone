@@ -23,6 +23,9 @@ class CustomTextfield extends StatelessWidget {
         ),
       ),
       validator: (val) {
+        if (val == null || val.isEmpty) {
+          return 'Ente your $hintText';
+        }
         return null;
       },
     );

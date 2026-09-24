@@ -1,6 +1,7 @@
 import 'package:amazon_clone/common/widgets/custom_button.dart';
 import 'package:amazon_clone/common/widgets/custom_textfield.dart';
 import 'package:amazon_clone/constants/global_variables.dart';
+import 'package:amazon_clone/features/auth/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
 enum Auth { sigin, signup }
@@ -23,6 +24,7 @@ class _AuthScreenState extends State<AuthScreen> {
   final TextEditingController _emailcontroller = TextEditingController();
   final TextEditingController _passwordcontroller = TextEditingController();
   final TextEditingController _namecontroller = TextEditingController();
+  final AuthService authService = AuthService();
 
   @override
   void dispose() {
@@ -30,6 +32,29 @@ class _AuthScreenState extends State<AuthScreen> {
     _emailcontroller.dispose();
     _passwordcontroller.dispose();
     _namecontroller.dispose();
+  }
+
+  void signUpUser() {
+    authService.signUpUser(
+      context: context,
+      email: _emailcontroller.text,
+      password: _passwordcontroller.text,
+      name: _namecontroller.text,
+      onSuccess: () {
+        // Success
+      },
+    );
+  }
+
+  void signInUser() {
+    authService.signInUser(
+      email: _emailcontroller.text,
+      password: _passwordcontroller.text,
+      context: context,
+      onSuccess: () {
+        // Success
+      },
+    );
   }
 
   @override
@@ -87,7 +112,14 @@ class _AuthScreenState extends State<AuthScreen> {
                           hintText: 'Password',
                         ),
                         const SizedBox(height: 10),
-                        CustomButton(text: 'Sign UP', onTap: () {}),
+                        CustomButton(
+                          text: 'Sign UP',
+                          onTap: () {
+                            if (_signUpFormKey.currentState!.validate()) {
+                              signUpUser();
+                            }
+                          },
+                        ),
                       ],
                     ),
                   ),
@@ -109,12 +141,13 @@ class _AuthScreenState extends State<AuthScreen> {
                   },
                 ),
               ),
+
               if (_auth == Auth.sigin)
                 Container(
                   padding: const EdgeInsets.all(8),
                   color: GlobalVariables.backgroundColor,
                   child: Form(
-                    key: _signUpFormKey,
+                    key: _signInFormKey,
                     child: Column(
                       children: [
                         CustomTextfield(
@@ -127,7 +160,15 @@ class _AuthScreenState extends State<AuthScreen> {
                           hintText: 'Password',
                         ),
                         const SizedBox(height: 10),
-                        CustomButton(text: 'Sign In', onTap: () {}),
+                        CustomButton(
+                          text: 'Sign In',
+                          onTap: () {
+                            // Fixed validation and added signInUser()
+                            if (_signInFormKey.currentState!.validate()) {
+                              signInUser();
+                            }
+                          },
+                        ),
                       ],
                     ),
                   ),
